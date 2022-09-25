@@ -19,7 +19,7 @@ namespace Gamblers_Ruin_Console
             this.odds = odds;
             players = new List<Player>();
             coinFlipper = new Random();
-            turns = 1;
+            turns = 0;
             bankruptPlayers = new List<KeyValuePair<Player, int>>();
         }
 
@@ -37,7 +37,7 @@ namespace Gamblers_Ruin_Console
             {
                 RunTurn();
             }
-            Console.WriteLine("All players have gone bankrupt after " + (turns - 1 ) + " turns");
+            Console.WriteLine("All players have gone bankrupt after " + turns + " turns");
             foreach (KeyValuePair<Player,int> bankruptPlayer in bankruptPlayers)
             {
                 Console.WriteLine(bankruptPlayer.Key.GetName() + " went bankrupt on turn " + bankruptPlayer.Value);
@@ -50,6 +50,7 @@ namespace Gamblers_Ruin_Console
 
         private void RunTurn()
         {
+            turns++;
             Console.WriteLine("Starting Turn #" + turns);
             foreach (Player player in players.Reverse<Player>()) { 
                 if (FlipCoin())
@@ -74,7 +75,6 @@ namespace Gamblers_Ruin_Console
                     }
                 }
             }
-            turns++;
             Console.WriteLine();
         }
 
