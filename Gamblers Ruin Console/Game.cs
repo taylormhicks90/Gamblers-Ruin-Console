@@ -10,8 +10,10 @@ namespace Gamblers_Ruin_Console
     {
         private Player player1;
         private Player player2;
+        
         private float initialOddsPlayer1;
         private float initialOdssPlayer2;
+        
         private int turns;
         private Random coinFlipper;
 
@@ -25,12 +27,11 @@ namespace Gamblers_Ruin_Console
             initialOdssPlayer2 = PlayerTwoCurrentOdds();
         }
 
-        
         public void Play()
         {
             Console.WriteLine("Introducing Our Players:");
-            Console.WriteLine(player1.GetName() + " is starting with " + player1.GetPurse() + " coins. Their Odds are" + initialOddsPlayer1);
-            Console.WriteLine(player2.GetName() + " is starting with " + player2.GetPurse() + " coins. Their Odds Are" + initialOdssPlayer2);
+            Console.WriteLine(player1.GetName() + " is starting with " + player1.GetPurse() + " coins. Their Odds are" + (initialOddsPlayer1 * 100) + "%.");
+            Console.WriteLine(player2.GetName() + " is starting with " + player2.GetPurse() + " coins. Their Odds Are" + (initialOdssPlayer2 * 100) + "%.");
             Console.WriteLine();
             do
             {
@@ -117,6 +118,5 @@ namespace Gamblers_Ruin_Console
         {
             return (float)player2.GetPurse() / (player1.GetPurse() + player2.GetPurse());
         }
-
     }
 }

@@ -17,9 +17,10 @@ namespace Gamblers_Ruin_Console
             Console.WriteLine("Enter Player Twos Starting Coins");
             coins = Convert.ToInt32(Console.ReadLine());         
             Player player2 = new(coins,name);
-            
+
+            Console.WriteLine();
+
             Game game = new(player1,player2);
-            
             game.Play();
             
             Console.WriteLine("Game Summary:");
