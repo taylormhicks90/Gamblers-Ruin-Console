@@ -95,7 +95,7 @@ namespace Gamblers_Ruin_Console
             else
             {
                 //player 2 won
-                Console.WriteLine(player1.GetName() + " won this turn.");
+                Console.WriteLine(player2.GetName() + " won this turn.");
                 player2.WinCoin();
                 player1.LoseCoin();
             }
