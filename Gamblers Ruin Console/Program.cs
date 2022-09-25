@@ -11,14 +11,14 @@ namespace Gamblers_Ruin_Console
             Console.WriteLine("Enter Player Ones Starting Coins");
             int coins = Convert.ToInt32(Console.ReadLine());
             Player player1 = new(coins, name);
+            Console.Clear();
 
             Console.WriteLine("Enter Player Twos Name:");
             name = Console.ReadLine();
             Console.WriteLine("Enter Player Twos Starting Coins");
             coins = Convert.ToInt32(Console.ReadLine());         
             Player player2 = new(coins,name);
-
-            Console.WriteLine();
+            Console.Clear();
 
             Game game = new(player1,player2);
             game.Play();
@@ -26,8 +26,8 @@ namespace Gamblers_Ruin_Console
             Console.WriteLine("Game Summary:");
             Console.WriteLine("The Game Lasted " + game.GetTurns() + " turns");
             Console.WriteLine(game.GetWinner().GetName() + " Won.");
-            Console.WriteLine(game.GetPlayer1().GetName() + " started with " + (game.Player1Odds() * 100) + "% chance of winning");
-            Console.WriteLine(game.GetPlayer2().GetName() + " started with " + (game.Player2Odds() * 100) + "% chance of winning");
+            Console.WriteLine(game.GetPlayer1().GetName() + " started with " + (game.PlayerOneInitialOdds() * 100) + "% chance of winning");
+            Console.WriteLine(game.GetPlayer2().GetName() + " started with " + (game.PlayerTwoInitialOdds() * 100) + "% chance of winning");
             
             Console.WriteLine();
             Console.WriteLine("Press Any Key To Exit");

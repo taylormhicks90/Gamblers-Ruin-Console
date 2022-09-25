@@ -8,57 +8,97 @@ namespace Gamblers_Ruin_Console
 {
     class Game
     {
-        private Player player1;
-        private Player player2;
+        private Player playerOne;
+        private Player playerTwo;
         
-        private float initialOddsPlayer1;
-        private float initialOdssPlayer2;
+        private float initialOddsPlayerOne;
+        private float initialOddsPlayerTwo;
         
         private int turns;
         private Random coinFlipper;
 
+        private Coin playerOneCoin;
+
+        enum Coin
+        {
+            Heads,
+            Tails,
+        }
+
         public Game(Player player1,Player player2)
         {
-            this.player1 = player1;
-            this.player2 = player2;
+            this.playerOne = player1;
+            this.playerTwo = player2;
+            
             coinFlipper = new Random();
             turns = 0;
-            initialOddsPlayer1 = PlayerOneCurrentOdds();
-            initialOdssPlayer2 = PlayerTwoCurrentOdds();
+            
+            initialOddsPlayerOne = this.playerOne.Odds(this.playerTwo);
+            initialOddsPlayerTwo = this.playerTwo.Odds(this.playerOne);
         }
 
         public void Play()
         {
-            Console.WriteLine("Introducing Our Players:");
-            Console.WriteLine(player1.GetName() + " is starting with " + player1.GetPurse() + " coins. Their Odds are" + (initialOddsPlayer1 * 100) + "%.");
-            Console.WriteLine(player2.GetName() + " is starting with " + player2.GetPurse() + " coins. Their Odds Are" + (initialOdssPlayer2 * 100) + "%.");
-            Console.WriteLine();
-            do
+            if(FlipCoin() == Coin.Heads)
             {
-                RunTurn();
-            } while (!player1.IsBankrupt() && !player2.IsBankrupt());
-            
-            if (player1.IsBankrupt())
-            {
-                Console.WriteLine(player1.GetName() + " went bankrupt after " + turns + " turns.");
-                Console.WriteLine(player2.GetName() + " wins");
+                Console.WriteLine(playerOne.GetName() + " Heads or Tails?");
+                string choice = Console.ReadLine().ToLower().Trim();
+                switch (choice)
+                {
+                    case "h":
+                    case "heads":
+                    case "head":
+                        playerOneCoin = Coin.Heads;
+                        break;
+                    case "t":
+                    case "tails":
+                    case "tail":
+                        playerOneCoin = Coin.Tails;
+                        break;
+                }
             }
             else
             {
-                Console.WriteLine(player2.GetName() + " went bankrupt after " + turns + " turns.");
-                Console.WriteLine(player1.GetName() + " wins");
+                Console.WriteLine(playerTwo.GetName() + " Heads or Tails?");
+                string choice = Console.ReadLine().ToLower().Trim();
+                switch (choice)
+                {
+                    case "h":
+                    case "heads":
+                    case "head":
+                        playerOneCoin = Coin.Tails;
+                        break;
+                    case "t":
+                    case "tails":
+                    case "tail":
+                        playerOneCoin = Coin.Heads;
+                        break;
+                }
             }
-            Console.WriteLine();
+            Console.Clear();
+
+            Console.WriteLine("Introducing Our Players:");
+            Console.WriteLine(playerOne.GetName() + " is starting with " + playerOne.GetPurse() + " coins. Their odds are " + (initialOddsPlayerOne * 100) + "%.");
+            Console.WriteLine(playerTwo.GetName() + " is starting with " + playerTwo.GetPurse() + " coins. Their odds are " + (initialOddsPlayerTwo * 100) + "%.\n");
+            Console.WriteLine(GetHeadsPlayer().GetName() + " is Heads and " + GetTailsPlayer().GetName() + " is Tails.");
+
+            Console.WriteLine("\nPress any Key to Begin Play");
+            Console.ReadKey();
+            do
+            {
+                RunTurn();
+            } while (!HaveWinner());
+            Console.WriteLine(GetWinner().GetName() + " wins\n");
         }
 
-        public float Player1Odds()
+        public float PlayerOneInitialOdds()
         {
-            return initialOddsPlayer1;
+            return initialOddsPlayerOne;
         }
 
-        public float Player2Odds()
+        public float PlayerTwoInitialOdds()
         {
-            return initialOdssPlayer2;
+            return initialOddsPlayerTwo;
         }
 
         public int GetTurns()
@@ -68,55 +108,58 @@ namespace Gamblers_Ruin_Console
 
         public Player GetPlayer1()
         {
-            return player1;
+            return playerOne;
         }
 
         public Player GetPlayer2()
         {
-            return player2;
+            return playerTwo;
         }
 
         public Player GetWinner()
         {
-            return player1.IsBankrupt() ? player2 : player1;
+            if (!HaveWinner()) return null;
+            return playerOne.IsBankrupt() ? playerTwo : playerOne;
         }
 
         private void RunTurn()
         {
             turns++;
             Console.WriteLine("Starting Turn #" + turns);
-            if (FlipCoin())
+            if (FlipCoin() == playerOneCoin )
             {
                 //player 1 won
-                Console.WriteLine(player1.GetName() + " won this turn.");
-                player1.WinCoin();
-                player2.LoseCoin();
+                Console.WriteLine(playerOne.GetName() + " won this turn.");
+                playerOne.TakeCoin(playerTwo);
             }
             else
             {
                 //player 2 won
-                Console.WriteLine(player2.GetName() + " won this turn.");
-                player2.WinCoin();
-                player1.LoseCoin();
+                Console.WriteLine(playerTwo.GetName() + " won this turn.");
+                playerTwo.TakeCoin(playerOne);
             }
-            Console.WriteLine(player1.GetName() + " now has " + player1.GetPurse() + ". Thier Current Odds are " + (PlayerOneCurrentOdds() * 100) + '%');
-            Console.WriteLine(player2.GetName() + " now has " + player2.GetPurse() + ". Thier Current Odds are " + (PlayerTwoCurrentOdds() * 100) + '%');
-            Console.WriteLine();
+            Console.WriteLine(playerOne.GetName() + " now has " + playerOne.GetPurse() + ". Thier Current Odds are " + (playerOne.Odds(playerTwo) * 100) + "%");
+            Console.WriteLine(playerTwo.GetName() + " now has " + playerTwo.GetPurse() + ". Thier Current Odds are " + (playerTwo.Odds(playerOne) * 100) + "%\n");
         }
 
-        private bool FlipCoin()
+        private Coin FlipCoin()
         {
-            return coinFlipper.Next(100) <= 50;
+            return coinFlipper.Next(2) == 1 ? Coin.Heads : Coin.Tails;
         }
 
-        private float PlayerOneCurrentOdds()
+        private bool HaveWinner()
         {
-            return (float)player1.GetPurse() / (player1.GetPurse() + player2.GetPurse());
+            return playerOne.IsBankrupt() || playerTwo.IsBankrupt();
         }
 
-        private float PlayerTwoCurrentOdds()
+        private Player GetHeadsPlayer()
         {
-            return (float)player2.GetPurse() / (player1.GetPurse() + player2.GetPurse());
+            return playerOneCoin == Coin.Heads ? playerOne : playerTwo;
+        }
+
+        private Player GetTailsPlayer()
+        {
+            return playerOneCoin == Coin.Tails ? playerOne : playerTwo;
         }
     }
 }

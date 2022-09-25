@@ -32,9 +32,15 @@ namespace Gamblers_Ruin_Console
             purse--;
         }
 
-        public void WinCoin()
+        public void TakeCoin(Player player)
         {
-            purse++;
+            player.LoseCoin();
+            this.purse++;
+        }
+
+        public float Odds(Player player)
+        {
+            return (float)this.purse / (this.purse + player.GetPurse());
         }
 
         public int GetPurse()
